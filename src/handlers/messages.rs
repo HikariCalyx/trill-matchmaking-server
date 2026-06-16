@@ -77,8 +77,15 @@ pub async fn handle_answer(
 
     let offerer_conn = offerer.unwrap();
 
-    send_answer_packet(&offerer_conn, &answer.sdp).await.ok();
-    send_ping_packet(connection).await.ok();
+    // Send answer to offerer with explicit error handling
+    if let Err(e) = send_answer_packet(&offerer_conn, &answer.sdp).await {
+        warn!("[{}] Failed to send answer packet to offerer: {}", session_id, e);
+    }
+
+    // Send ping to answerer to signal completion
+    if let Err(e) = send_ping_packet(connection).await {
+        warn!("[{}] Failed to send ping packet to answerer: {}", session_id, e);
+    }
 
     debug!("[{}] Answer relayed, peers closed", session_id);
 

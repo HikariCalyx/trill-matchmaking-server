@@ -154,6 +154,7 @@ pub async fn send_hello_packet(
     }));
 
     let encoded = packet.encode_to_vec();
+    debug!("Sending hello packet with {} ICE servers ({} bytes)", ice_servers.len(), encoded.len());
     connection.tx.send(encoded)?;
 
     Ok(())
@@ -169,6 +170,7 @@ pub async fn send_offer_packet(
     }));
 
     let encoded = packet.encode_to_vec();
+    debug!("Sending offer packet ({} bytes)", encoded.len());
     connection.tx.send(encoded)?;
 
     Ok(())
@@ -184,6 +186,7 @@ pub async fn send_answer_packet(
     }));
 
     let encoded = packet.encode_to_vec();
+    debug!("Sending answer packet ({} bytes)", encoded.len());
     connection.tx.send(encoded)?;
 
     Ok(())
@@ -194,6 +197,7 @@ pub async fn send_ping_packet(connection: &Arc<Connection>) -> anyhow::Result<()
     packet.which = Some(packet::Which::Ping(crate::pb::Ping {}));
 
     let encoded = packet.encode_to_vec();
+    debug!("Sending ping packet ({} bytes)", encoded.len());
     connection.tx.send(encoded)?;
 
     Ok(())
@@ -207,6 +211,7 @@ pub async fn send_abort_packet(
     packet.which = Some(packet::Which::Abort(crate::pb::Abort { reason }));
 
     let encoded = packet.encode_to_vec();
+    debug!("Sending abort packet ({} bytes) with reason {}", encoded.len(), reason);
     connection.tx.send(encoded)?;
 
     Ok(())

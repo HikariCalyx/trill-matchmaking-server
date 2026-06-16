@@ -9,6 +9,7 @@ mod ice;
 use axum::{
     extract::{ws::WebSocketUpgrade, Query},
     http::StatusCode,
+    response::IntoResponse,
     routing::get,
     Router,
 };
@@ -49,7 +50,7 @@ async fn main() -> anyhow::Result<()> {
     let app = Router::new()
         .route("/ok", get(health_check_ok))
         .route("/health", get(health_check_json))
-        .route("/", get(index))
+        .route("/", get(websocket_handler))
         .route("/ws", get(websocket_handler))
         .fallback(not_found)
         .with_state(hub);
@@ -81,10 +82,6 @@ async fn health_check_ok() -> String {
 
 async fn health_check_json() -> axum::Json<serde_json::Value> {
     axum::Json(serde_json::json!({ "status": "ok" }))
-}
-
-async fn index() -> String {
-    "ok".to_string()
 }
 
 async fn not_found() -> (StatusCode, String) {
