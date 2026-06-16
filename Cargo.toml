@@ -40,5 +40,5 @@ opt-level = 0
 opt-level = 3
 
 [[bin]]
-name = "tango-signaling-server"
+name = "trill-signaling-server"
 path = "src/main.rs"
