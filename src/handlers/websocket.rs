@@ -4,7 +4,6 @@ use crate::hub::{Connection, MatchmakingHub};
 use crate::ice::get_ice_servers;
 use crate::pb::{Packet, packet};
 use crate::models::SessionAttachment;
-use crate::config::Config;
 use futures::{SinkExt, StreamExt};
 use prost::Message;
 use std::sync::Arc;
@@ -15,6 +14,7 @@ pub async fn handle(
     ws: WebSocket,
     session_id: String,
     hub: Arc<MatchmakingHub>,
+    config: Arc<crate::config::Config>,
 ) {
     // Split the WebSocket into sender and receiver
     let (mut sender, mut receiver) = ws.split();
@@ -36,7 +36,6 @@ pub async fn handle(
         .await;
 
     // Get ICE servers and send hello packet
-    let config = Config::from_env();
     let ice_servers = get_ice_servers(&config).await;
 
     if let Err(e) = send_hello_packet(&connection, &ice_servers).await {
@@ -116,12 +115,13 @@ async fn handle_packet(
 
     match &packet.which {
         Some(packet::Which::Start(start)) => {
-            let mut att = connection.attachment.write().await;
-            handle_start(connection, hub, session_id, start, &mut att).await?;
+            // Do NOT hold a lock on this connection's attachment here.
+            // handle_start calls find_offerer, which reads every connection's
+            // attachment (including this one). Pre-locking it would self-deadlock.
+            handle_start(connection, hub, session_id, start).await?;
         }
         Some(packet::Which::Answer(answer)) => {
-            let att = connection.attachment.read().await;
-            handle_answer(connection, hub, session_id, answer, &att).await?;
+            handle_answer(connection, hub, session_id, answer).await?;
         }
         Some(packet::Which::Ping(_)) => {
             send_ping_packet(connection).await?;

@@ -1,6 +1,6 @@
 use crate::hub::{Connection, MatchmakingHub};
 use crate::pb::{packet::Start, packet::Answer};
-use crate::models::{encode_connection_id, SessionAttachment};
+use crate::models::encode_connection_id;
 use std::sync::Arc;
 use tracing::{debug, warn};
 
@@ -11,38 +11,48 @@ pub async fn handle_start(
     hub: &Arc<MatchmakingHub>,
     session_id: &str,
     start: &Start,
-    attachment: &mut SessionAttachment,
 ) -> anyhow::Result<()> {
     let connection_id = encode_connection_id(&start.connection_id);
 
+    // find_offerer reads every connection's attachment. We must not hold any
+    // attachment lock while calling it.
     let offerer = hub.find_offerer(session_id).await;
 
     if offerer.is_none() {
-        // No one waiting — become the offerer
+        // No one waiting — become the offerer. Lock only our own attachment.
+        let mut attachment = connection.attachment.write().await;
         attachment.offer_sdp = Some(start.offer_sdp.clone());
         attachment.connection_id = connection_id;
-        debug!(
-            "[{}] Stored offer, waiting for answerer",
-            session_id
-        );
+        debug!("[{}] Stored offer, waiting for answerer", session_id);
         return Ok(());
     }
 
     let offerer_conn = offerer.unwrap();
-    let offerer_att = offerer_conn.attachment.read().await;
+
+    // If the offerer we found is this very connection (e.g. a duplicate Start),
+    // just refresh our own offer and return — avoids locking the same
+    // attachment twice.
+    if Arc::ptr_eq(&offerer_conn, connection) {
+        let mut attachment = connection.attachment.write().await;
+        attachment.offer_sdp = Some(start.offer_sdp.clone());
+        attachment.connection_id = connection_id;
+        debug!("[{}] Refreshed own offer", session_id);
+        return Ok(());
+    }
+
+    // Read the offerer's current connection_id without holding the lock longer
+    // than necessary.
+    let offerer_connection_id = {
+        let offerer_att = offerer_conn.attachment.read().await;
+        offerer_att.connection_id.clone()
+    };
 
     if let Some(ref conn_id) = connection_id {
-        if Some(conn_id) == offerer_att.connection_id.as_ref() {
+        if Some(conn_id) == offerer_connection_id.as_ref() {
             // Same connection_id: offerer is reconnecting with a fresh offer.
-            drop(offerer_att);
-
             let mut new_att = offerer_conn.attachment.write().await;
             new_att.offer_sdp = Some(start.offer_sdp.clone());
             new_att.connection_id = connection_id;
-            drop(new_att);
-
-            // Clear stale socket's offer before closing it
-            // Note: We'll close the old connection
             debug!(
                 "[{}] Replaced stale offer from reconnecting offerer",
                 session_id
@@ -51,9 +61,11 @@ pub async fn handle_start(
         }
     }
 
-    // Different peer — hand it the offerer's SDP so it can answer
-    let offer_sdp = offerer_att.offer_sdp.clone().unwrap_or_default();
-    drop(offerer_att);
+    // Different peer — hand it the offerer's SDP so it can answer.
+    let offer_sdp = {
+        let offerer_att = offerer_conn.attachment.read().await;
+        offerer_att.offer_sdp.clone().unwrap_or_default()
+    };
 
     debug!("[{}] Answerer arrived, sending offer SDP", session_id);
     send_offer_packet(connection, &offer_sdp).await?;
@@ -66,7 +78,6 @@ pub async fn handle_answer(
     hub: &Arc<MatchmakingHub>,
     session_id: &str,
     answer: &Answer,
-    _attachment: &SessionAttachment,
 ) -> anyhow::Result<()> {
     let offerer = hub.find_offerer(session_id).await;
 

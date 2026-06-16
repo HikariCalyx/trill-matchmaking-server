@@ -22,6 +22,7 @@ use crate::config::Config;
 use crate::hub::MatchmakingHub;
 
 pub type SharedHub = Arc<MatchmakingHub>;
+pub type SharedConfig = Arc<Config>;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -35,7 +36,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Load configuration
     dotenv::dotenv().ok();
-    let config = Config::from_env();
+    let config = Arc::new(Config::from_env());
 
     info!("Starting Tango Signaling Server");
     info!(
@@ -53,7 +54,7 @@ async fn main() -> anyhow::Result<()> {
         .route("/", get(websocket_handler))
         .route("/ws", get(websocket_handler))
         .fallback(not_found)
-        .with_state(hub);
+        .with_state((hub, config.clone()));
 
     // Create socket address
     let addr: SocketAddr = format!("{}:{}", config.server_host, config.server_port)
@@ -96,11 +97,12 @@ pub struct WebSocketQuery {
 async fn websocket_handler(
     ws: WebSocketUpgrade,
     Query(params): Query<WebSocketQuery>,
-    axum::extract::State(hub): axum::extract::State<SharedHub>,
+    axum::extract::State((hub, config)): axum::extract::State<(SharedHub, SharedConfig)>,
 ) -> impl axum::response::IntoResponse {
     let session_id = params.session_id;
     let hub_clone = Arc::clone(&hub);
+    let config_clone = Arc::clone(&config);
     ws.on_upgrade(move |socket| async {
-        handlers::websocket::handle(socket, session_id, hub_clone).await
+        handlers::websocket::handle(socket, session_id, hub_clone, config_clone).await
     })
 }

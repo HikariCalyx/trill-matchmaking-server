@@ -48,12 +48,20 @@ impl MatchmakingHub {
     }
 
     pub async fn find_offerer(&self, session_id: &str) -> Option<Arc<Connection>> {
-        if let Some(conns) = self.connections.get(session_id) {
-            for conn in conns.iter() {
-                let att = conn.attachment.read().await;
-                if att.offer_sdp.is_some() {
-                    return Some(Arc::clone(conn));
-                }
+        // Snapshot the connection list and release the DashMap shard guard
+        // BEFORE awaiting any attachment locks. Holding a DashMap Ref across an
+        // `.await` keeps the shard locked, which blocks add_connection/find_offerer
+        // for every other connection whose session hashes to the same shard.
+        let conns: Vec<Arc<Connection>> = match self.connections.get(session_id) {
+            Some(entry) => entry.iter().cloned().collect(),
+            None => return None,
+        };
+
+        for conn in conns {
+            let att = conn.attachment.read().await;
+            if att.offer_sdp.is_some() {
+                drop(att);
+                return Some(conn);
             }
         }
         None
