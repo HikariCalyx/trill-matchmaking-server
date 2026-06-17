@@ -24,10 +24,11 @@ jobs:
             binary-name: trill-signaling-server_arm64-linux
             asset-path: target/aarch64-unknown-linux-gnu/release/trill-signaling-server
             
-          - runs-on: ubuntu-22.04-arm
-            target: armv7-unknown-linux-gnueabihf
-            binary-name: trill-signaling-server_armv7-linux
-            asset-path: target/armv7-unknown-linux-gnueabihf/release/trill-signaling-server
+          # TODO: Fix armv7 cross-compilation issues
+          # - runs-on: ubuntu-22.04-arm
+          #   target: armv7-unknown-linux-gnueabihf
+          #   binary-name: trill-signaling-server_armv7-linux
+          #   asset-path: target/armv7-unknown-linux-gnueabihf/release/trill-signaling-server
             
           - runs-on: windows-latest
             target: x86_64-pc-windows-msvc
@@ -45,7 +46,9 @@ jobs:
 
       - name: Install cross for armv7 cross-compilation
         if: matrix.target == 'armv7-unknown-linux-gnueabihf'
-        run: cargo install cross
+        run: |
+          rustup toolchain install stable --force-non-host
+          cargo install cross
 
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
