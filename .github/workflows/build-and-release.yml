@@ -30,12 +30,6 @@ jobs:
             asset-path: target/release/trill-signaling-server
             setup-cmd: sudo apt-get update && sudo apt-get install -y gcc-arm-linux-gnueabihf
             
-          - runs-on: ubuntu-22.04-arm
-            target: armv6-unknown-linux-gnueabihf
-            binary-name: trill-signaling-server_armv6-linux
-            asset-path: target/release/trill-signaling-server
-            setup-cmd: sudo apt-get update && sudo apt-get install -y gcc-arm-linux-gnueabihf
-            
           - runs-on: windows-latest
             target: x86_64-pc-windows-msvc
             binary-name: trill-signaling-server_amd64-windows.exe
