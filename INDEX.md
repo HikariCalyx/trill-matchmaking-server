@@ -104,8 +104,8 @@ See [PORTING_SUMMARY.md](PORTING_SUMMARY.md) for detailed comparison.
 
 | Platform | Status | Binary | Size |
 |----------|--------|--------|------|
-| Windows (x86_64-msvc) | ✅ Working | `tango-signaling-server.exe` | 4.8 MB |
-| Linux (x86_64-gnu) | ✅ Working | `tango-signaling-server` | 30-50 MB |
+| Windows (x86_64-msvc) | ✅ Working | `trill-signaling-server.exe` | 4.8 MB |
+| Linux (x86_64-gnu) | ✅ Working | `trill-signaling-server` | 30-50 MB |
 | macOS (x86_64) | ✅ Tier 1 | Not tested yet | - |
 | macOS (ARM64) | ✅ Tier 1 | Not tested yet | - |
 

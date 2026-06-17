@@ -17,21 +17,21 @@ cd rust
 cargo build --release
 ```
 
-Binary: `target\release\tango-signaling-server.exe`
+Binary: `target\release\trill-signaling-server.exe`
 
 ### 3. Run
 ```cmd
 # Default (localhost:8000)
-target\release\tango-signaling-server.exe
+target\release\trill-signaling-server.exe
 
 # Custom port
 set SERVER_PORT=9000
-target\release\tango-signaling-server.exe
+target\release\trill-signaling-server.exe
 
 # With Cloudflare TURN
 set CLOUDFLARE_TURN_SERVICE_ID=your-id
 set CLOUDFLARE_TURN_SERVICE_API_TOKEN=your-token
-target\release\tango-signaling-server.exe
+target\release\trill-signaling-server.exe
 ```
 
 ### 4. Test
@@ -54,23 +54,23 @@ cd rust
 cargo build --release
 ```
 
-Binary: `target/release/tango-signaling-server`
+Binary: `target/release/trill-signaling-server`
 
 ### 3. Run
 ```bash
 # Default (0.0.0.0:8000)
-./target/release/tango-signaling-server
+./target/release/trill-signaling-server
 
 # Custom port
-SERVER_PORT=9000 ./target/release/tango-signaling-server
+SERVER_PORT=9000 ./target/release/trill-signaling-server
 
 # With Cloudflare TURN
 export CLOUDFLARE_TURN_SERVICE_ID=your-id
 export CLOUDFLARE_TURN_SERVICE_API_TOKEN=your-token
-./target/release/tango-signaling-server
+./target/release/trill-signaling-server
 
 # In background
-nohup ./target/release/tango-signaling-server > server.log 2>&1 &
+nohup ./target/release/trill-signaling-server > server.log 2>&1 &
 ```
 
 ### 4. Test

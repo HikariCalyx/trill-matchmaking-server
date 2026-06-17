@@ -75,7 +75,7 @@ cd rust
 cargo build --release
 
 # Binary location
-# target\release\tango-signaling-server.exe
+# target\release\trill-signaling-server.exe
 ```
 
 ### Option 2: Cross-Compile from Windows to Linux
@@ -91,7 +91,7 @@ rustup target add x86_64-unknown-linux-gnu
 cargo build --release --target x86_64-unknown-linux-gnu
 
 # Binary location
-# target\x86_64-unknown-linux-gnu\release\tango-signaling-server
+# target\x86_64-unknown-linux-gnu\release\trill-signaling-server
 ```
 
 **Note**: Cross-compiling from Windows to Linux requires additional setup with `cross` tool or custom linker configuration. Native Linux build is recommended for production.
@@ -108,7 +108,7 @@ cd rust
 cargo build --release
 
 # Binary location
-# target/release/tango-signaling-server
+# target/release/trill-signaling-server
 ```
 
 ### Option 2: Cross-Compile from Linux to Windows
@@ -126,7 +126,7 @@ sudo apt-get install -y mingw-w64
 cargo build --release --target x86_64-pc-windows-gnu
 
 # Binary location
-# target/x86_64-pc-windows-gnu/release/tango-signaling-server.exe
+# target/x86_64-pc-windows-gnu/release/trill-signaling-server.exe
 ```
 
 ## Quick Start Scripts
@@ -144,7 +144,7 @@ cargo build --release
 if %ERRORLEVEL% EQU 0 (
     echo.
     echo Build successful!
-    echo Binary: target\release\tango-signaling-server.exe
+    echo Binary: target\release\trill-signaling-server.exe
 ) else (
     echo Build failed!
     exit /b 1
@@ -163,7 +163,7 @@ cargo build --release
 
 echo ""
 echo "Build successful!"
-echo "Binary: target/release/tango-signaling-server"
+echo "Binary: target/release/trill-signaling-server"
 ```
 
 Usage:
@@ -193,7 +193,7 @@ docker build -t tango-signaling:latest .
 
 ```cmd
 # Run the server
-target\release\tango-signaling-server.exe
+target\release\trill-signaling-server.exe
 
 # In another terminal, test
 curl http://localhost:8000/health
@@ -203,7 +203,7 @@ curl http://localhost:8000/health
 
 ```bash
 # Run the server
-./target/release/tango-signaling-server
+./target/release/trill-signaling-server
 
 # In another terminal, test
 curl http://localhost:8000/health
@@ -280,7 +280,7 @@ cargo run            # Run in debug mode
 
 If binary fails on Linux:
 ```bash
-ldd target/release/tango-signaling-server
+ldd target/release/trill-signaling-server
 # Check for missing libraries and install if needed
 ```
 

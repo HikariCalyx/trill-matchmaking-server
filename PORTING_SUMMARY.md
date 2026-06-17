@@ -84,12 +84,12 @@ rust/
 ### Windows (x86_64-pc-windows-msvc)
 - **Binary size**: ~4.8 MB
 - **Build time**: ~60-90 seconds
-- **Binary path**: `target\release\tango-signaling-server.exe`
+- **Binary path**: `target\release\trill-signaling-server.exe`
 
 ### Linux (x86_64-unknown-linux-gnu)
 - **Binary size**: ~30-50 MB (unstripped)
 - **Build time**: ~60-90 seconds  
-- **Binary path**: `target/release/tango-signaling-server`
+- **Binary path**: `target/release/trill-signaling-server`
 
 Both are fully optimized release builds with LTO enabled.
 
@@ -149,13 +149,13 @@ Note: Rust version can handle 5x more concurrent connections with the same resou
 
 ```bash
 # Linux
-./target/release/tango-signaling-server
+./target/release/trill-signaling-server
 
 # Windows
-target\release\tango-signaling-server.exe
+target\release\trill-signaling-server.exe
 
 # With custom port
-SERVER_PORT=9000 ./target/release/tango-signaling-server
+SERVER_PORT=9000 ./target/release/trill-signaling-server
 ```
 
 ### Docker
@@ -219,12 +219,12 @@ Potential enhancements:
 
 ### Port Already in Use
 ```bash
-SERVER_PORT=8001 ./tango-signaling-server
+SERVER_PORT=8001 ./trill-signaling-server
 ```
 
 ### Permission Denied (Linux)
 ```bash
-chmod +x target/release/tango-signaling-server
+chmod +x target/release/trill-signaling-server
 ```
 
 ### Build Fails on Windows

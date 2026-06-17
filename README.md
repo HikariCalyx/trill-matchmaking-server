@@ -41,8 +41,8 @@ cargo build --release
 ### Build Output
 
 The compiled binary will be at:
-- **Windows**: `target\release\tango-signaling-server.exe`
-- **Linux**: `target/release/tango-signaling-server`
+- **Windows**: `target\release\trill-signaling-server.exe`
+- **Linux**: `target/release/trill-signaling-server`
 
 ## Running
 
@@ -56,25 +56,25 @@ cp .env.example .env
 cargo run
 
 # Or run the compiled binary
-./target/release/tango-signaling-server  # Linux
-./target/release/tango-signaling-server.exe  # Windows
+./target/release/trill-signaling-server  # Linux
+./target/release/trill-signaling-server.exe  # Windows
 ```
 
 ### Docker
 
 ```bash
 # Build Docker image
-docker build -t tango-signaling-server .
+docker build -t trill-signaling-server .
 
 # Run container
-docker run -p 8000:8000 tango-signaling-server
+docker run -p 8000:8000 trill-signaling-server
 
 # With environment variables
 docker run -p 8000:8000 \
   -e SERVER_HOST=0.0.0.0 \
   -e SERVER_PORT=8000 \
   -e RUST_LOG=info \
-  tango-signaling-server
+  trill-signaling-server
 ```
 
 ## Configuration
