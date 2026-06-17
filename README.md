@@ -1,4 +1,4 @@
-# Tango Signaling Server - Rust Implementation
+# Trill Signaling Server - Rust Implementation
 
 A high-performance WebSocket-based signaling server for WebRTC peer-to-peer communication, written in Rust. Handles session matchmaking and ICE server provisioning with support for Windows and Linux tier 1 targets.
 
@@ -9,7 +9,6 @@ A high-performance WebSocket-based signaling server for WebRTC peer-to-peer comm
 - **Session Matchmaking**: In-process matchmaking hub for peer discovery
 - **ICE Server Support**: 
   - Custom TURN servers
-  - Cloudflare TURN service integration
   - Default Google STUN servers
 - **Cross-Platform**: Builds on Windows and Linux x86_64
 - **Production Ready**: Optimized release builds with LTO
@@ -90,10 +89,6 @@ SERVER_PORT=8000              # Listen port
 TURN_ADDR=turn.example.com
 TURN_USER=username
 TURN_CREDENTIAL=password
-
-# Cloudflare TURN Service (optional)
-CLOUDFLARE_TURN_SERVICE_ID=your-id
-CLOUDFLARE_TURN_SERVICE_API_TOKEN=your-token
 
 # Logging
 DEBUG=false

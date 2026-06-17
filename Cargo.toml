@@ -1,6 +1,6 @@
 [package]
 name = "trill-signaling-server"
-version = "5.0.2"
+version = "5.0.3"
 edition = "2021"
 authors = ["Hikari Calyx Tech"]
 description = "Rust implementation of the Trill signaling server for WebRTC"
@@ -14,7 +14,6 @@ prost = "0.13"
 prost-types = "0.13"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "http2", "charset"] }
 hex = "0.4"
 uuid = { version = "1.10", features = ["v4"] }
 log = "0.4"

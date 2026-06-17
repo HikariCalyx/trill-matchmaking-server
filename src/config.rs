@@ -7,8 +7,6 @@ pub struct Config {
     pub turn_addr: Option<String>,
     pub turn_user: Option<String>,
     pub turn_credential: Option<String>,
-    pub cloudflare_turn_service_id: Option<String>,
-    pub cloudflare_turn_service_api_token: Option<String>,
     pub debug: bool,
     pub log_level: String,
 }
@@ -24,8 +22,6 @@ impl Config {
             turn_addr: env::var("TURN_ADDR").ok(),
             turn_user: env::var("TURN_USER").ok(),
             turn_credential: env::var("TURN_CREDENTIAL").ok(),
-            cloudflare_turn_service_id: env::var("CLOUDFLARE_TURN_SERVICE_ID").ok(),
-            cloudflare_turn_service_api_token: env::var("CLOUDFLARE_TURN_SERVICE_API_TOKEN").ok(),
             debug: env::var("DEBUG")
                 .map(|v| v.to_lowercase() == "true")
                 .unwrap_or(false),
