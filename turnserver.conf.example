@@ -1,0 +1,22 @@
+listening-port=3478
+listening-ip=0.0.0.0
+listening-ip=::
+external-ip=<server_ip>/10.0.4.12
+realm=<server_ip>
+
+# Long-term credential mechanism (required by both modes below)
+lt-cred-mech
+
+# --- Static user (used when USE_STATIC_TURN_CREDENTIAL=true) ---
+# Keep this only if you still want the static fallback to work.
+user=<static_user_name>:<static_password>
+
+# --- Dynamic REST-API credentials (default mode) ---
+# This secret MUST match the TURN_SECRET env var of the signaling server.
+use-auth-secret
+static-auth-secret=<your_shared_secret>
+
+syslog
+no-rfc5780
+no-stun-backward-compatibility
+response-origin-only-with-rfc5780

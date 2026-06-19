@@ -7,7 +7,13 @@ pub struct Config {
     pub turn_addr: Option<String>,
     pub turn_user: Option<String>,
     pub turn_credential: Option<String>,
+    /// Shared `static-auth-secret` with the co-located coturn instance, used to
+    /// mint time-limited (REST API) credentials when static credentials are disabled.
+    pub turn_secret: Option<String>,
+    /// TTL, in seconds, for dynamically generated TURN credentials.
+    pub turn_credential_ttl: u64,
     pub debug: bool,
+    pub use_static_turn_credential: bool,
     pub log_level: String,
 }
 
@@ -22,7 +28,15 @@ impl Config {
             turn_addr: env::var("TURN_ADDR").ok(),
             turn_user: env::var("TURN_USER").ok(),
             turn_credential: env::var("TURN_CREDENTIAL").ok(),
+            turn_secret: env::var("TURN_SECRET").ok(),
+            turn_credential_ttl: env::var("TURN_CREDENTIAL_TTL")
+                .ok()
+                .and_then(|v| v.parse().ok())
+                .unwrap_or(3600),
             debug: env::var("DEBUG")
+                .map(|v| v.to_lowercase() == "true")
+                .unwrap_or(false),
+            use_static_turn_credential: env::var("USE_STATIC_TURN_CREDENTIAL")
                 .map(|v| v.to_lowercase() == "true")
                 .unwrap_or(false),
             log_level: env::var("LOG_LEVEL").unwrap_or_else(|_| "INFO".to_string()),
